@@ -1,75 +1,3 @@
-// import Image from "next/image";
-// import NavLinks from "./NavLinks";
-
-// interface Category {
-//   slug: string;
-//   title: string;
-//   topicId: string | null;
-//   url: string;
-//   scrapable: boolean;
-// }
-
-// interface CategoryResponse {
-//   success: boolean;
-//   count: number;
-//   cachedAt: string;
-//   data: Category[];
-// }
-
-// const Navbar = async () => {
-
-//     const date = new Date().toLocaleDateString("bn-BD", {
-//         dateStyle: "full"
-//     })
-
-//   return (
-//     <>
-//       {/* ================= HEADER ================= */}
-//       <header className="w-full border-b border-gray-100 bg-white">
-//         <div className="relative mx-auto flex h-24 max-w-[1280px] items-center px-4 sm:px-6 lg:px-0">
-//           {/* ================= CENTER LOGO + NAME + DATE ================= */}
-//           <div className="flex items-center gap-3">
-//             {/* Logo */}
-//             <Image
-//               className="bg-[#05893E] rounded rounded-2xl p-[8px] h-10 w-10 sm:h-12 sm:w-12"
-//               height={18}
-//               width={18}
-//               src="/logo-icon.png"
-//               alt="Logo Image"
-//             />
-
-//             {/* Website Name + Date */}
-//             <div className="flex flex-col">
-//               <h1 className="font-serif text-[20px] font-bold leading-[28px] text-[#1D271F] sm:text-[20px]">
-//                 বাজার দর
-//               </h1>
-
-//               <p className="font-serif text-[12px] leading-4 text-gray-500 sm:text-[13px]">
-//                 {date}
-//               </p>
-//             </div>
-//           </div>
-
-//           {/* ================= RIGHT - AUTH BUTTONS ================= */}
-//           <div className="absolute right-4 flex items-center gap-4 sm:right-6 sm:gap-5 lg:right-0">
-//             <button className="font-serif text-[14px] text-gray-800 transition hover:text-[#05893E] sm:text-[14px]">
-//               সাইন ইন
-//             </button>
-
-//             <button className="btn border-0 bg-[#05893E] px-5 font-serif text-[14px] text-white shadow-none hover:bg-[#03602b] sm:px-6 sm:text-[14px]">
-//               সাইন আপ
-//             </button>
-//           </div>
-//         </div>
-
-//         {/* <NavLinks></NavLinks> */}
-//       </header>
-//     </>
-//   );
-// };
-
-// export default Navbar;
-
 "use client";
 
 import Image from "next/image";
@@ -87,7 +15,8 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    fetch("https://api.abcz.workers.dev/api/bazardor/categories")
+    // fetch("https://api.abcz.workers.dev/api/bazardor/categories")
+    fetch("https://openapi.programming-hero.com/api/bazardor/categories")
       .then((res) => res.json())
       .then((data) => setCategories(data))
       .catch((err) => console.log(err));
@@ -102,7 +31,7 @@ const Navbar = () => {
   }).format(new Date());
 
   return (
-    <nav className="bg-[#FAFCFA] flex flex-col gap-4">
+    <nav className="bg-[#FAFCFA] flex flex-col gap-4 mt-[20px]">
       {/* ================= HEADER ================= */}
       <div>
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-0">
@@ -155,13 +84,13 @@ const Navbar = () => {
 
             {/* ================= AUTH BUTTONS ================= */}
             <div className="flex gap-1 sm:gap-2 ml-auto md:ml-0">
-              <button className="pointer btn px-2 sm:px-4.25 py-1 text-sm sm:text-base">
+              <Link href="/sign-in" className="pointer btn px-2 sm:px-4.25 py-1 text-sm sm:text-base">
                 সাইন ইন
-              </button>
+              </Link>
 
-              <button className="pointer bg-[#40893F] btn px-2 sm:px-4.25 py-1 text-[#FAFCFA] text-sm sm:text-base">
+              <Link href="/sign-up" className="pointer bg-[#40893F] btn px-2 sm:px-4.25 py-1 text-[#FAFCFA] text-sm sm:text-base">
                 সাইন আপ
-              </button>
+              </Link>
             </div>
           </div>
         </div>

@@ -4,7 +4,8 @@ import type { IData } from "@/types/ProductType";
 
 const getMarquee = async () => {
   const res = await fetch(
-    "https://api.abcz.workers.dev/api/bazardor/products",
+    // "https://api.abcz.workers.dev/api/bazardor/products",
+    "https://openapi.programming-hero.com/api/bazardor/products",
   );
   return res.json();
 };
