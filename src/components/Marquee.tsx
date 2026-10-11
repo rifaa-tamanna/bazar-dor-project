@@ -4,7 +4,6 @@ import type { IData } from "@/types/ProductType";
 
 const getMarquee = async () => {
   const res = await fetch(
-    // "https://api.abcz.workers.dev/api/bazardor/products",
     "https://openapi.programming-hero.com/api/bazardor/products",
   );
   return res.json();
@@ -18,8 +17,13 @@ const Marquee = async () => {
   );
 
   return (
-    <MarqueeText direction="right" duration={12} pauseOnHover={true}>
-      <div className="flex list-none bg-[#FAFCFA]">
+    <MarqueeText
+      direction="right"
+      duration={10}
+      pauseOnHover={true}
+      className="bg-[#FAFCFA]"
+    >
+      <div className="flex list-none ">
         {newMarqueeData.map((data: IData) => (
           <li key={data?.id}>
             <span>
@@ -33,12 +37,7 @@ const Marquee = async () => {
                   </div>
 
                   <div className="flex gap-1.5">
-                    <Image
-                      height={13}
-                      width={13}
-                      alt="green"
-                      src="/red-triangle.png"
-                    />
+                    <Image height={13} width={13} alt="green" src="/red-triangle.png" />
                     <p className="text-red-500">
                       {bnNumber.format(data?.change?.pct)}%
                     </p>

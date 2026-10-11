@@ -23,21 +23,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-theme="light"
       className={`${hindSiliguri.className} h-full antialiased`}
     >
-
-      <body className="min-h-full flex flex-col">
-        
-        <Navbar></Navbar>
-        <Marquee></Marquee>
-        
-
-        <main>
-          {children}
-        </main>
-
-        
-        <Footer></Footer>
-        
-        </body>
+      <body>
+        <Navbar />
+        <Marquee/>
+        <main>{children}</main>
+        <Footer/>
+      </body>
     </html>
   );
 }

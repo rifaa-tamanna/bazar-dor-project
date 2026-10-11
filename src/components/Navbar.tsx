@@ -15,12 +15,12 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    // fetch("https://api.abcz.workers.dev/api/bazardor/categories")
     fetch("https://openapi.programming-hero.com/api/bazardor/categories")
       .then((res) => res.json())
       .then((data) => setCategories(data))
       .catch((err) => console.log(err));
   }, []);
+  console.log(categories);
 
   const date = new Intl.DateTimeFormat("bn-BD", {
     weekday: "long",
@@ -31,7 +31,7 @@ const Navbar = () => {
   }).format(new Date());
 
   return (
-    <nav className="bg-[#FAFCFA] flex flex-col gap-4 mt-[20px]">
+    <nav className="bg-[#FAFCFA] flex flex-col gap-4">
       {/* ================= HEADER ================= */}
       <div>
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-0">
@@ -84,13 +84,13 @@ const Navbar = () => {
 
             {/* ================= AUTH BUTTONS ================= */}
             <div className="flex gap-1 sm:gap-2 ml-auto md:ml-0">
-              <Link href="/sign-in" className="pointer btn px-2 sm:px-4.25 py-1 text-sm sm:text-base">
+              <button className="pointer btn px-2 sm:px-4.25 py-1 text-sm sm:text-base">
                 সাইন ইন
-              </Link>
+              </button>
 
-              <Link href="/sign-up" className="pointer bg-[#40893F] btn px-2 sm:px-4.25 py-1 text-[#FAFCFA] text-sm sm:text-base">
+              <button className="pointer bg-[#40893F] btn px-2 sm:px-4.25 py-1 text-[#FAFCFA] text-sm sm:text-base">
                 সাইন আপ
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -100,7 +100,7 @@ const Navbar = () => {
       {menuOpen && (
         <div className="md:hidden border-t border-slate-200">
           <div className="flex flex-col gap-2 py-3 px-4">
-            {categories.map((category) => (
+            {categories?.map((category) => (
               <li
                 key={category.id}
                 className="list-none px-3.25 py-2 text-[#1D2720] font-semibold"

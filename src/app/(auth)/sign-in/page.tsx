@@ -1,184 +1,181 @@
 "use client";
-
-import Link from "next/link";
 import { useState } from "react";
+import { TextField, FieldError, Label, Input } from "@heroui/react";
+import Form from "next/form";
+import Image from "next/image";
+import { signIn } from "@/lib/auth-client";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-export default function SignInPage() {
-  const [email, setEmail] = useState("");
+type SignupFormData = {
+  email: string;
+  password: string;
+};
+
+
+const SignInPage = () => {
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email");
+    const password = formData.get("password");
 
-    // এখানে তোমার Better Auth sign-in logic যুক্ত করবে।
-    console.log({ email, password });
+    if (
+      typeof email !== "string" ||
+      typeof password !== "string"
+    ) {
+      console.error("Invalid form data");
+      return;
+    }
+
+    const signupData: SignupFormData = {
+      email,
+      password,
+    };
+
+    try {
+      const { data: userData, error } = await signIn.email(signupData);
+
+      if (error) {
+        console.error(error.message);
+        return;
+      }
+
+      console.log("Signin successful:", userData);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error("An unexpected error occurred");
+      }
+    }
+    router.replace("/")
   };
-
+  const handleGoogleSignIn = async () => {
+    const data = await signIn.social({
+      provider: "google",
+    });
+    console.log(data);
+  };
+  const handleGithubSignIn = async () => {
+    const data = await signIn.social({
+      provider: "github",
+    });
+    console.log(data);
+  };
   return (
-    <main className="min-h-screen bg-[#F0F5F0] px-4 py-8 sm:py-10">
-      <div className="mx-auto w-full max-w-[438px]">
-        {/* Heading */}
-        <header className="mb-7 text-center">
-          <h1 className="text-[25px] font-bold leading-tight tracking-tight text-[#26352B] sm:text-[28px]">
-            সাইন ইন
-          </h1>
-
-          <p className="mt-2 text-[14px] leading-6 text-[#7B857D] sm:text-[15px]">
-            বিস্তারিত দাম, বাজার তুলনা ও প্রোফাইল দেখতে অ্যাকাউন্টে ঢুকুন।
+    <>
+      <div className="bg-[#F0F5F0] flex flex-col items-center p-10">
+        <div className="text-center mb-7">
+          <h1 className="text-[24px] font-semibold">সাইন ইন</h1>
+          <p className="font-medium text-[#949A96]">
+            বিস্তারিত দাম, বাজার তুলনা ও প্রোফাইল দেখতে অ্যাকাউন্টে ঢুকুন
           </p>
-        </header>
+        </div>
 
-        {/* Sign In Card */}
-        <section className="rounded-[17px] border border-[#DCE6DC] bg-[#FBFCFB] p-5 sm:p-[25px]">
-          <form onSubmit={handleSubmit} className="space-y-[17px]">
-            {/* Email */}
-            <div>
-              <label
-                htmlFor="email"
-                className="mb-[7px] block text-[14px] font-medium text-[#26352B]"
-              >
-                ইমেইল
-              </label>
+        {/* form section  */}
 
-              <input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-                className="h-[43px] w-full rounded-[10px] border border-[#DCE6DC] bg-transparent px-3 text-[14px] text-[#29352D] outline-none transition placeholder:text-[#29352D] focus:border-[#07883F] focus:ring-2 focus:ring-[#07883F]/10"
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label
-                htmlFor="password"
-                className="mb-[7px] block text-[14px] font-medium text-[#26352B]"
-              >
-                পাসওয়ার্ড
-              </label>
-
-              <input
-                id="password"
-                type="password"
-                placeholder="কমপক্ষে ৮ অক্ষর"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={8}
-                autoComplete="current-password"
-                className="h-[43px] w-full rounded-[10px] border border-[#DCE6DC] bg-transparent px-3 text-[14px] text-[#29352D] outline-none transition placeholder:text-[#536057] focus:border-[#07883F] focus:ring-2 focus:ring-[#07883F]/10"
-              />
-            </div>
-
-            {/* Forgot Password */}
-            <div className="flex justify-end -mt-2">
-              <Link
-                href="/forgot-password"
-                className="text-[13px] text-[#07883F] hover:underline"
-              >
-                পাসওয়ার্ড ভুলে গেছেন?
-              </Link>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="h-[43px] w-full cursor-pointer rounded-[9px] bg-[#07883F] text-[14px] font-semibold text-white shadow-[0_3px_4px_rgba(0,100,45,0.25)] transition hover:bg-[#067535] active:scale-[0.99]"
+        <div className="bg-[#FAFCFA] rounded-2xl">
+          <Form
+            action="/"
+            className="flex flex-col gap-1 py-8 px-10"
+            onSubmit={onSubmit}
+          >
+            <TextField
+              className="flex flex-col gap-2 w-96"
+              isRequired
+              name="email"
+              type="email"
+              validate={(value) => {
+                if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
+                  return "একটি ভ্যালিড ইমেইল দিন";
+                }
+                return null;
+              }}
             >
+              <Label className="label">ইমেইল</Label>
+              <Input
+                type="email"
+                className="input w-full"
+                placeholder="you@example.com"
+              />
+              <FieldError />
+            </TextField>
+
+            <TextField
+              validate={(value) => {
+                if (value.length < 8) {
+                  return "পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে";
+                }
+                return null;
+              }}
+              minLength={8}
+              className="flex flex-col gap-2 w-96"
+              name="password"
+              type="password"
+              isRequired
+              value={password}
+              onChange={setPassword}
+            >
+              <Label>পাসওয়ার্ড</Label>
+              <Input placeholder="কমপক্ষে ৮ অক্ষর" className="w-full" />
+              <FieldError />
+            </TextField>
+
+            <button className="btn mt-4 w-96 text-slate-100 bg-[#40893F]">
               সাইন ইন
             </button>
-          </form>
 
-          {/* Divider */}
-          <div className="my-[18px] flex items-center gap-3">
-            <div className="h-[2px] flex-1 bg-[#E1E6E1]" />
+            {/* অথবা section  */}
 
-            <span className="shrink-0 text-[13px] text-[#6F7971]">অথবা</span>
+            <div className="flex items-center gap-6 py-4">
+              <div className="h-0.75 flex-1 bg-gray-200" />
 
-            <div className="h-[2px] flex-1 bg-[#E1E6E1]" />
-          </div>
+              <span className="shrink-0  text-gray-500">অথবা</span>
 
-          {/* Social Login */}
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {/* Google */}
-            <button
-              type="button"
-              onClick={() =>
-                alert("Google authentication এখনো যুক্ত করা হয়নি।")
-              }
-              className="flex h-[43px] cursor-pointer items-center justify-center gap-2 rounded-[10px] border border-[#DCE6DC] px-2 text-[13px] font-semibold text-[#26352B] transition hover:bg-[#F0F5F0] sm:text-[14px]"
-            >
-              <svg
-                viewBox="0 0 48 48"
-                className="h-[17px] w-[17px] shrink-0"
-                aria-hidden="true"
+              <div className="h-0.75 flex-1 bg-gray-200" />
+            </div>
+
+            {/* google and github sign up section  */}
+            <div className="flex gap-2.5 justify-center pointer">
+              <button
+                onClick={handleGoogleSignIn}
+                className="flex gap-2.5 border border-slate-400 p-2.5 rounded-2xl"
               >
-                <path
-                  fill="#4285F4"
-                  d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.7c3.9-3.6 6-8.8 6-15Z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M24 44c5.5 0 10.1-1.8 13.5-4.8l-6.7-5.1c-1.8 1.2-4 1.9-6.8 1.9-5.2 0-9.6-3.5-11.2-8.2H5.9v5.2A20 20 0 0 0 24 44Z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M12.8 27.8a12 12 0 0 1 0-7.6V15H5.9a20 20 0 0 0 0 17.9l6.9-5.1Z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M24 12.1c3 0 5.7 1 7.8 3.1l5.8-5.8C34.1 6.1 29.5 4 24 4A20 20 0 0 0 5.9 15l6.9 5.2c1.6-4.7 6-8.1 11.2-8.1Z"
-                />
-              </svg>
-              Google দিয়ে চালিয়ে যান
-            </button>
-
-            {/* GitHub */}
-            <button
-              type="button"
-              onClick={() =>
-                alert("GitHub authentication এখনো যুক্ত করা হয়নি।")
-              }
-              className="flex h-[43px] cursor-pointer items-center justify-center gap-2 rounded-[10px] border border-[#DCE6DC] px-2 text-[13px] font-semibold text-[#26352B] transition hover:bg-[#F0F5F0] sm:text-[14px]"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="h-[17px] w-[17px] shrink-0"
-                aria-hidden="true"
+                <Image src="/google-auth.jpeg" alt="google" height={20} width={20} />
+                <span className="text-black font-semibold">
+                  Google দিয়ে চালিয়ে যান
+                </span>
+              </button>
+              <button
+                onClick={handleGithubSignIn}
+                className="flex gap-2.5 border border-slate-400 p-2.5 rounded-2xl"
               >
-                <path d="M12 .9a11.1 11.1 0 0 0-3.5 21.6c.6.1.8-.3.8-.6v-2.1c-3.1.7-3.8-1.3-3.8-1.3-.5-1.3-1.2-1.6-1.2-1.6-1-.7.1-.7.1-.7 1.1.1 1.7 1.2 1.7 1.2 1 1.7 2.6 1.2 3.2.9.1-.7.4-1.2.7-1.5-2.5-.3-5.1-1.3-5.1-5.5 0-1.2.4-2.2 1.2-3-.1-.3-.5-1.4.1-3 0 0 1-.3 3.1 1.2a10.7 10.7 0 0 1 5.7 0c2.1-1.5 3.1-1.2 3.1-1.2.6 1.6.2 2.7.1 3 .8.8 1.2 1.8 1.2 3 0 4.2-2.6 5.2-5.1 5.5.4.4.8 1 .8 2v3.1c0 .3.2.7.8.6A11.1 11.1 0 0 0 12 .9Z" />
-              </svg>
-              GitHub দিয়ে চালিয়ে যান
-            </button>
-          </div>
+                {" "}
+                <Image src="/github-auth.jpeg" alt="google" height={20} width={20} />
+                <span className="text-black font-semibold">
+                  Github দিয়ে চালিয়ে যান
+                </span>
+              </button>
+            </div>
 
-          {/* Sign Up Link */}
-          <p className="mt-[18px] text-center text-[14px] text-[#37433A]">
-            অ্যাকাউন্ট নেই?{" "}
-            <Link
-              href="/sign-up"
-              className="font-medium text-[#07883F] hover:underline"
-            >
-              সাইন আপ করুন
-            </Link>
-          </p>
-        </section>
-
-        {/* Back to Home */}
-        <div className="mt-6 text-center">
-          <Link
-            href="/"
-            className="text-[14px] text-[#7B857D] transition hover:text-[#07883F]"
-          >
-            ← হোম পেজে ফিরে যান
-          </Link>
+            <p className="font-medium text-center mt-2">
+              অ্যাকাউন্ট নেই ?{" "}
+              <Link href="/sign-up" className="text-green-600 hover:underline">
+                সাইন আপ করুন
+              </Link>
+            </p>
+          </Form>
         </div>
+         <p className="mt-8">
+                 <Link href="/"> ← হোম পেজে ফিরে যান</Link>
+                </p>
       </div>
-    </main>
+    </>
   );
-}
+};
+
+export default SignInPage;
