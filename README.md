@@ -138,6 +138,10 @@ is available, clone it with:
 
 git clone: https://github.com/rifaa-tamanna/bazar-dor-project
 
+project Live Link: https://bazar-dor-project-sand.vercel.app
+
+github repo: https://github.com/rifaa-tamanna/bazar-dor-project
+
 
 Replace the placeholders with the actual repository URL and project
 directory.
